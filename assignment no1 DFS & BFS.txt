@@ -1,0 +1,88 @@
+#include <iostream>
+#include <unordered_map>
+#include <unordered_set>
+#include <queue>
+#include <stack>
+#include <string>
+#include <sstream>
+
+using namespace std;
+
+// Function to create a graph from user input
+unordered_map<string, unordered_set<string>> createGraph() {
+    unordered_map<string, unordered_set<string>> graph;
+    string input;
+    while (true) {
+        cout << "Enter edge as 'source destination', or type 'done' to finish: ";
+        getline(cin, input);
+        if (input == "done") {
+            break;
+        }
+        istringstream iss(input);
+        string source, destination;
+        iss >> source >> destination;
+        graph[source].insert(destination);
+        graph[destination].insert(source);
+    }
+    return graph;
+}
+
+// Breadth-first search traversal
+void bfs(const unordered_map<string, unordered_set<string>>& graph, const string& start) {
+    queue<string> q;
+    unordered_set<string> visited;
+    q.push(start);
+    visited.insert(start);
+
+    cout << "BFS Traversal: ";
+    while (!q.empty()) {
+        string vertex = q.front();
+        q.pop();
+        cout << vertex << " ";
+        for (const auto& neighbor : graph.at(vertex)) {
+            if (visited.find(neighbor) == visited.end()) {
+                q.push(neighbor);
+                visited.insert(neighbor);
+            }
+        }
+    }
+    cout << endl;
+}
+
+// Depth-first search traversal
+void dfs(const unordered_map<string, unordered_set<string>>& graph, const string& start) {
+    stack<string> s;
+    unordered_set<string> visited;
+    s.push(start);
+    visited.insert(start);
+
+    cout << "DFS Traversal: ";
+    while (!s.empty()) {
+        string vertex = s.top();
+        s.pop();
+        cout << vertex << " ";
+        for (const auto& neighbor : graph.at(vertex)) {
+            if (visited.find(neighbor) == visited.end()) {
+                s.push(neighbor);
+                visited.insert(neighbor);
+            }
+        }
+    }
+    cout << endl;
+}
+
+int main() {
+    // Create the graph
+
+    unordered_map<string, unordered_set<string>> graph = createGraph();
+
+    // Perform BFS and DFS
+    string startVertex;
+    cout << "Enter the start vertex for BFS and DFS traversal: ";
+    cin >> startVertex;
+
+    bfs(graph, startVertex);
+    dfs(graph, startVertex);
+
+    return 0;
+}

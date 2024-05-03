@@ -1,0 +1,124 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+bool is_prime(int n) {
+    if (n <= 1) {
+        return false;
+    }
+    if (n <= 3) {
+        return true;
+    }
+    if (n % 2 == 0 || n % 3 == 0) {
+        return false;
+    }
+    int i = 5;
+    while (i * i <= n) {
+        if (n % i == 0 || n % (i + 2) == 0) {
+            return false;
+        }
+        i += 6;
+    }
+    return true;
+}
+
+int gcd(int a, int b) {
+    if (b == 0) {
+        return a;
+    }
+    else {
+        return gcd(b, a % b);
+    }
+}
+
+int mod_pow(int base, int exponent, int modulus) {
+    int result = 1;
+    base = base % modulus;
+    while (exponent > 0) {
+        if (exponent % 2 == 1) {
+            result = (result * base) % modulus;
+        }
+        exponent = exponent >> 1;
+        base = (base * base) % modulus;
+    }
+    return result;
+}
+
+pair<int, int> generate_keys(int p, int q) {
+    if (!(is_prime(p) && is_prime(q))) {
+        cout << "Input is not a prime number." << endl;
+        return make_pair(0, 0);
+    }
+    int phi = (p - 1) * (q - 1);
+    int e = 2;
+    while (e < phi) {
+        if (gcd(e, phi) == 1 && e != p && e != q) {
+            break;
+        }
+        e += 1;
+    }
+    int k = 1;
+    while (true) {
+        int d = (1 + k * phi) / e;
+        if ((d * e) % phi == 1) {
+            return make_pair(e, d);
+        }
+        k += 1;
+    }
+}
+
+
+int encrypt(int msg, int e, int n) {
+    return mod_pow(msg, e, n);
+}
+
+int decrypt(int encrypted_msg, int d, int n) {
+    return mod_pow(encrypted_msg, d, n);
+}
+
+int main() {
+    int p, q;
+    cout << "Enter a prime number (p): ";
+    cin >> p;
+    while (!is_prime(p) || p <= 1) {
+        cout << "Input is not a valid prime number." << endl;
+        cout << "Enter a prime number (p): ";
+        cin >> p;
+    }
+    cout << "Enter another prime number (q): ";
+    cin >> q;
+    while (!is_prime(q) || q <= 1) {
+        cout << "Input is not a valid prime number." << endl;
+        cout << "Enter another prime number (q): ";
+        cin >> q;
+    }
+
+
+    auto keys = generate_keys(p, q);
+    int e = keys.first;
+    int d = keys.second;
+    if (e == 0 || d == 0) {
+        cout << "Error generating keys. Please enter different prime numbers." << endl;
+    }
+    else {
+        int n = p * q;
+        int phi = (p - 1) * (q - 1);
+        cout << "n: " << n << endl;
+        cout << "phi(n): " << phi << endl;
+        cout << "Public key (e, n): (" << e << ", " << n << ")" << endl;
+        cout << "Private key (d, n): (" << d << ", " << n << ")" << endl;
+
+        int msg;
+        cout << "Enter a message to encrypt: ";
+        cin >> msg;
+
+        int encrypted_msg = encrypt(msg, e, n);
+        cout << "Encrypted message: " << encrypted_msg << endl;
+
+        int decrypted_msg = decrypt(encrypted_msg, d, n);
+        cout << "Decrypted message: " << decrypted_msg << endl;
+    }
+
+    return 0;
+}

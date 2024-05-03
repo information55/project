@@ -1,0 +1,30 @@
+#include <iostream>
+#include <string>
+using namespace std;
+void AND(string b)
+{
+cout<<"AND OPERATION";
+for(int i=0;i<b.size();i++)
+{
+int s=int(b[i]&127);
+cout<<s<<"=="<<char(s)<<endl;
+
+}
+}
+void XOR(string b){
+cout<<"XOR OPERATION";
+for(int i=0;i<b.size();i++)
+{
+int s=int(b[i])^127;
+cout<<s<<"=="<<char(s)<<endl;
+}
+}
+int main()
+{
+string a;
+cout<<"Enter the string"<<endl;
+cin>>a;
+AND(a);
+cout<<endl;
+XOR(a);
+}

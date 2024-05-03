@@ -1,0 +1,79 @@
+#include <iostream>
+#include <list>
+#include <vector>
+using namespace std;
+
+class Graph {
+    int V;
+    list<int> *adj;
+public:
+    Graph(int V);
+    void addEdge(int v, int w);
+    void greedyColoring(int C);
+};
+
+Graph::Graph(int V) {
+    this->V = V;
+    adj = new list<int>[V];
+}
+
+void Graph::addEdge(int v, int w) {
+    adj[v].push_back(w);
+    adj[w].push_back(v);
+}
+
+void Graph::greedyColoring(int C) {
+    vector<int> result(V, 0); // Initialize all vertices with color 0
+
+    result[0] = 1; // Assign color 1 to the first vertex
+
+    bool *available = new bool[V];
+    for (int cr = 0; cr < V; cr++)
+        available[cr] = false;
+
+    for (int u = 1; u < V; u++) {
+        list<int>::iterator i;
+        for (i = adj[u].begin(); i != adj[u].end(); ++i)
+            if (result[*i] != 0)
+                available[result[*i] - 1] = true;
+
+        int cr;
+        for (cr = 0; cr < C; cr++)
+            if (available[cr] == false)
+                break;
+
+        result[u] = cr + 1;
+
+        for (i = adj[u].begin(); i != adj[u].end(); ++i)
+            if (result[*i] != 0)
+                available[result[*i] - 1] = false;
+    }
+    delete[] available;
+
+    for (int u = 0; u < V; u++)
+        cout << "Vertex " << u << " ---> Color "
+             << result[u] << endl;
+}
+
+int main() {
+    int V, E, C;
+    cout << "Enter the number of vertices: ";
+    cin >> V;
+    cout << "Enter the number of edges: ";
+    cin >> E;
+    Graph g(V);
+
+    cout << "Enter the edges: \n";
+    for (int i = 0; i < E; i++) { // Loop starts from 0
+        int v, w;
+        cin >> v >> w;
+        g.addEdge(v - 1, w - 1); // Adjust indices to start from 0
+    }
+    cout << "Enter no of colors: ";
+    cin >> C;
+
+    cout << "Coloring of the vertices \n";
+    g.greedyColoring(C);
+
+    return 0;
+}

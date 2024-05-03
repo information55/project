@@ -1,0 +1,51 @@
+import random
+
+class RestaurantChatBot:
+    def __init__(self):
+        self.greetings = ["Hi there!", "Hello!", "Welcome to our restaurant!"]
+        self.goodbyes = ["Goodbye!", "See you later!", "Have a great day!"]
+        self.unknown_responses = ["I'm not sure how to respond to that.", "Could you please rephrase that?"]
+        self.menu = {
+            "starters": ["Soup of the day", "Caesar salad", "Garlic bread"],
+            "mains": ["Steak", "Pasta", "Burger", "Fish and chips"],
+            "desserts": ["Cheesecake", "Ice cream", "Chocolate fondant"]
+        }
+
+    def greet(self):
+        return random.choice(self.greetings)
+
+    def say_goodbye(self):
+        return random.choice(self.goodbyes)
+
+    def provide_menu(self):
+        return self.menu
+
+    def make_reservation(self, name, num_people, date_time):
+        return f"Reservation confirmed for {num_people} people on {date_time}. See you then, {name}!"
+
+    def respond(self, message):
+        message = message.lower()
+        if "reservation" in message:
+            return "Sure! Please provide your name, number of people, and preferred date and time."
+        elif "menu" in message:
+            return self.provide_menu()
+        elif "goodbye" in message or "bye" in message:
+            return self.say_goodbye()
+        elif any(word in message for word in ["hello", "hi", "hey"]):
+            return self.greet()
+        else:
+            return random.choice(self.unknown_responses)
+
+# Create an instance of the RestaurantChatBot
+chatbot = RestaurantChatBot()
+
+# Start chatting
+print("Restaurant ChatBot: " + chatbot.greet())
+while True:
+    user_input = input("You: ")
+    if user_input.lower() == "exit":
+        print("Restaurant ChatBot: " + chatbot.say_goodbye())
+        break
+    response = chatbot.respond(user_input)
+    print("Restaurant ChatBot: " + response)
+

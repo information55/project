@@ -1,0 +1,75 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+
+const int MV = 100;
+
+void inputGraph(int adj[MV][MV], int& vertices, int& edges)
+{
+    cout << "enter the number of vertices and edges:";
+    cin >> vertices >> edges;
+    cout << "enter the edges (v1 v2):" << endl;
+    for (int i = 0; i < edges; ++i)
+    {
+        int v1, v2;
+        cin >> v1 >> v2;
+        adj[v1][v2] = 1;
+        adj[v2][v1] = 1;
+    }
+}
+
+void displayGraph(const int adj[MV][MV], int vertices)
+{
+    cout << "graph representation:" << endl;
+    for (int i = 1; i <= vertices; ++i)
+    {
+        for (int j = 1; j <= vertices; ++j)
+        {
+            cout << adj[i][j] << "";
+        }
+        cout << endl;
+    }
+}
+
+void dfsUsingStack(int startVertex, const int adj[MV][MV], bool visited[MV])
+{
+    stack<int> s;
+    s.push(startVertex);
+
+    while (!s.empty())
+    {
+        int currentVertex = s.top();
+        s.pop();
+
+        if (!visited[currentVertex])
+        {
+            cout << currentVertex <<"->"<< "";
+            visited[currentVertex] = true;
+        }
+
+        for (int i = MV; i >= 1; --i)
+        {
+            if (adj[currentVertex][i] == 1 && !visited[i])
+            {
+                s.push(i);
+            }
+        }
+    }
+}
+
+int main()
+{
+    int adj[MV][MV] = {0};
+    int vertices, edges;
+
+    inputGraph(adj, vertices, edges);
+    displayGraph(adj, vertices);
+
+    bool visited[MV] = {false};
+    int SN;
+    cout<<"Enter the starting node:";
+    cin>>SN;
+    cout << "DFS traversal from starting node:";
+    dfsUsingStack(SN, adj, visited);
+    return 0;
+}
